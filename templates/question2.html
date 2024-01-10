@@ -1,0 +1,194 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{url_for('static', filename='quiz_quant.css')}}">
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+
+<script>
+let data = {{data|tojson}}
+let score = 0
+let max_score = 0
+let ans = new Array()
+
+function highlightCurrent(){
+    let activeid = '#quizlink'
+    $(activeid).addClass('active')
+    $('#homelink').removeClass('active')
+}
+
+
+function render_header(){
+    let h1_div = document.createElement("div")
+    let h2_div = document.createElement("div")
+
+    h1_div.setAttribute("class", "row")
+    h1 = document.createElement("H1")
+    h1.setAttribute("class", "quizMainPageTitle")
+    let drink_text = document.createTextNode("Quiz - "+data["drinkname"])
+    h1.appendChild(drink_text)
+    h1_div.append(h1)
+
+    h2_div.setAttribute("class", "row")
+    h2 = document.createElement("H2")
+    let q2_text = document.createTextNode("Q2. How many/much each ingredient should I have?")
+    h2.appendChild(q2_text)
+    h2_div.append(h2)
+
+    $("#q2_header").append(h1_div)
+    $("#q2_header").append(h2_div)
+}
+
+function render_ingredients(){
+    // to do
+    console.log(1)
+    $.each(data["ingredients"], function(i, ingredient){
+        let ingredient_p = document.createElement("p")
+
+        let input_span = document.createElement("span")
+        input_span.setAttribute("style","padding-left:7px")
+        let input_quant = document.createElement("input")
+        input_quant.setAttribute("type","number")
+        input_quant.setAttribute("min",1)
+        input_quant.setAttribute("max",100)
+        //input_quant.setAttribute("class", "form-control")
+        input_quant.setAttribute("id", "input"+i)
+        input_quant.setAttribute("size", 15)
+        input_quant.setAttribute("required","")
+        input_span.appendChild(input_quant)
+        ingredient_p.append(input_span)
+
+        let unit_span = document.createElement("span")
+        unit_span.setAttribute("style","padding-left:7px;font-weight:bold")
+        let unit_text = document.createTextNode(ingredient["unit"])
+        unit_span.appendChild(unit_text)
+        ingredient_p.append(unit_span)
+
+        let name_span = document.createElement("span")
+        name_span.setAttribute("style","padding-left:7px")
+        let name_text = document.createTextNode(ingredient["name"])
+        name_span.append(name_text)
+        ingredient_p.append(name_span)
+
+        let check_text = document.createElement("text")
+        check_text.setAttribute("id","check"+i)
+        ingredient_p.append(check_text)
+
+        $("#ingredient_row").append(ingredient_p)
+        max_score = max_score + 1
+    })
+}
+
+function get_score() {
+    document.getElementById("clearbtn").setAttribute("hidden","")
+    $.each(data["ingredients"], function(i, ingredient){
+        elm = document.getElementById("input"+i)
+        elm_check = document.getElementById("check"+i)
+        elm.disabled = true
+        console.log(elm.value)
+        val = 0
+        if(elm.value!=""){
+            val = elm.value
+        }
+        ans.push(val)
+        if(Math.abs(val-ingredient["amount"])<0.00001){
+            score = score + 1
+            elm_check.innerHTML = "<span class=check>" + " &nbsp &#9989 Correct! &nbsp" + "</span>"
+            elm_check.setAttribute("style","color:green;font-weight:bold")
+        }
+        else if(val-ingredient["amount"]>0){
+            elm_check.innerHTML = "<span class=cross>" + " &nbsp &#10060 too much! &nbsp" + "</span>" + "<span class=check>"+" Correct answer: &nbsp"+ingredient["amount"]+" "+ingredient["unit"]+"</span>"
+            elm_check.setAttribute("style","color:red;font-weight:bold")
+        }
+        else{
+            elm_check.innerHTML = "<span class=cross>" + " &nbsp &#10060 too few! &nbsp" + "</span>" + "<span class=check>"+" Correct answer: &nbsp"+ingredient["amount"]+" "+ingredient["unit"]+"</span>"
+            elm_check.setAttribute("style","color:red;font-weight:bold")
+        }
+    })
+    let score_div = document.createElement("div")
+    score_div.setAttribute("class", "row")
+    score_div.setAttribute("id", "myscore")
+    score_header = document.createElement("H4")
+    let score_text = document.createTextNode("Score: "+score+"/"+max_score)
+    score_header.appendChild(score_text)
+    ///score_div.append(score_header)
+    $("#score").append(score_header)
+    $("#q2_header").append(score_div)
+
+    console.log(ans)
+    interact('.drag-drop').unset()
+    $.ajax({
+        type: "POST",
+        url: "/record_q2",
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify([score,max_score,ans]),
+        success: function(newData){
+            console.log(newData)
+        }
+    });
+    sub_btn = document.getElementById("sub_btn")
+    sub_btn.setAttribute("onclick", "goto_next()")
+    sub_btn.innerHTML = "Next Question"
+}
+
+function goto_next(){
+    window.location = ("/quizstep/"+data["drink_id"])
+}
+
+function bottom_buttons(){
+    let submit_button_div = document.createElement("div")
+    let clear_button_div = document.createElement("div")
+    submit_button_div.setAttribute("class", "col-md-6 text-right")
+    clear_button_div.setAttribute("class", "col-md-6 text-left")
+
+    let submit_button = document.createElement("button")
+    let clear_button = document.createElement("a")
+
+    submit_button.setAttribute("class", "btn btn-success ")
+    submit_button.setAttribute("role", "button")
+    submit_button.setAttribute("onclick","get_score()")
+    submit_button.setAttribute("id","sub_btn")
+    //submit_button.setAttribute("href", "/quiz_quantity/"+data["drink_id"])
+    submit_button.innerHTML = "Submit"
+
+    clear_button.setAttribute("class", "btn btn-success ")
+    clear_button.setAttribute("role", "button")
+    clear_button.setAttribute("id", "clearbtn")
+    clear_button.setAttribute("href", "/quiz_quantity/"+data["drink_id"])
+    clear_button.innerHTML = "Clear All"
+    submit_button_div.append(submit_button)
+    clear_button_div.append(clear_button)
+
+    $("#buttonrow").append(clear_button_div)
+    $("#buttonrow").append(submit_button_div)
+}
+
+$(document).ready(function(){
+    render_ingredients()
+    bottom_buttons()
+    render_header()
+    highlightCurrent();
+})
+</script>
+
+<div class="row container">
+    <div class="col-md-12" id="q2_header">
+    </div>
+</div>
+<div id="score"></div>
+<div class="row container" id="buttonrow">
+</div><br>
+
+
+
+<div class="row container">
+    <div class="col-md-12" id="ingredient_row">
+    </div>
+</div>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,273 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{url_for('static', filename='quiz_ingredients.css')}}">
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+
+<script>
+    function highlightCurrent(){
+        let activeid = '#quizlink'
+        $(activeid).addClass('active')
+        $('#homelink').removeClass('active')
+    }
+
+
+
+let drink_data = {{drink_data|tojson}}
+let drink_id = {{drink_id}}
+let data = drink_data[drink_id]
+let set_ans = new Set()
+let set_ingredients = new Set()
+let set_to_render = new Set()
+let score = 0
+let max_score = 0
+let other_ingredients = new Set()
+let n_drinks = Object.keys(drink_data).length
+// get correct ingredients
+$.each(data["ingredients"], function(i, ingredient){
+    set_ingredients.add(ingredient["name"])
+    set_to_render.add(ingredient["name"])
+})
+max_score = set_ingredients.size
+// get other_ingredients
+for (let i=1; i<=n_drinks; i++){
+    if(i==drink_id)
+        continue
+    let drink_i = drink_data[i]
+    $.each(drink_i["ingredients"], function(i, ingredient){
+        if(!set_ingredients.has(ingredient["name"])){
+            //console.log(ingredient["name"])
+            other_ingredients.add(ingredient["name"])
+        }
+    })
+}
+const shuffled = Array.from(other_ingredients).sort(() => 0.5 - Math.random());
+let selected = shuffled.slice(0, 3);
+for (let i=0; i<selected.length; i++){
+    set_to_render.add(selected[i])
+}
+const shuffled_ingredients = Array.from(set_to_render).sort(() => 0.5 - Math.random());
+console.log(set_ingredients)
+console.log(shuffled_ingredients)
+// enable draggables to be dropped into this
+interact('.dropzone').dropzone({
+  // only accept elements matching this CSS selector
+  accept: '.ingredient',
+  // Require a 75% element overlap for a drop to be possible
+  overlap: 0.75,
+
+  // listen for drop related events:
+
+  ondropactivate: function (event) {
+    // add active dropzone feedback
+    event.target.classList.add('drop-active')
+  },
+  ondragenter: function (event) {
+    var draggableElement = event.relatedTarget
+    var dropzoneElement = event.target
+
+    // feedback the possibility of a drop
+    dropzoneElement.classList.add('drop-target')
+    draggableElement.classList.add('can-drop')
+    //draggableElement.textContent = 'Dragged in'
+  },
+  ondragleave: function (event) {
+    // remove the drop feedback style
+    event.target.classList.remove('drop-target')
+    event.relatedTarget.classList.remove('can-drop')
+    set_ans.delete(event.relatedTarget.childNodes[0].textContent)
+    //event.relatedTarget.textContent = 'Dragged out'
+  },
+  ondrop: function (event) {
+    set_ans.add(event.relatedTarget.childNodes[0].textContent)
+    //console.log(new Array(...set_ans).join('\n'))
+    //event.relatedTarget.childNodes[0].textContent = 'Dropped'
+    //event.relatedTarget.textContent = 'Dropped'
+  },
+  ondropdeactivate: function (event) {
+    // remove active dropzone feedback
+    event.target.classList.remove('drop-active')
+    event.target.classList.remove('drop-target')
+  }
+})
+
+interact('.drag-drop')
+  .draggable({
+    inertia: true,
+    modifiers: [
+      interact.modifiers.restrictRect({
+        //restriction: 'parent',
+        endOnly: true
+      })
+    ],
+    autoScroll: true,
+    // dragMoveListener from the dragging demo above
+    listeners: { move: dragMoveListener }
+  })
+
+function dragMoveListener (event) {
+  var target = event.target
+  // keep the dragged position in the data-x/data-y attributes
+  var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+  var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+
+  // translate the element
+  target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+
+  // update the posiion attributes
+  target.setAttribute('data-x', x)
+  target.setAttribute('data-y', y)
+}
+
+function render_header(){
+    let h1_div = document.createElement("div")
+    let h2_div = document.createElement("div")
+
+    h1_div.setAttribute("class", "row")
+    h1 = document.createElement("H1")
+    h1.setAttribute("class", "quizMainPageTitle")
+    let drink_text = document.createTextNode("Quiz - "+data["drinkname"])
+    h1.appendChild(drink_text)
+    h1_div.append(h1)
+
+    h2_div.setAttribute("class", "row")
+    h2 = document.createElement("H2")
+    let q1_text = document.createTextNode("Q1. Drag the ingredients needed into the box on the right.")
+    h2.appendChild(q1_text)
+    h2_div.append(h2)
+
+    $("#q1_header").append(h1_div)
+    $("#q1_header").append(h2_div)
+}
+
+function render_ingredients(){
+    $.each(shuffled_ingredients, function(i, ingredient){
+        let ingredientdiv = document.createElement("div")
+        ingredientdiv.setAttribute("class", "row drag-drop ingredient")
+        let txtspan = document.createElement("span")
+        let ingredient_text = document.createTextNode(ingredient)
+        txtspan.appendChild(ingredient_text)
+        ingredientdiv.append(txtspan)
+        $("#ingredient_row").append(ingredientdiv)
+    })
+}
+
+function get_score() {
+    console.log(set_ans)
+    document.getElementById("clearbtn").setAttribute("hidden","")
+
+    let elem = document.getElementById("myscore")
+    if(elem){
+        elem.parentNode.removeChild(elem)
+    }
+    score = 0
+    set_ans.forEach(function(value1, value2, set_ans){
+        if(set_ingredients.has(value1)){
+            score = score + 1
+        }
+        else{
+            //score = score - 1
+        }
+    })
+    score = Math.max(0,score)
+    console.log("score is "+score+"\n")
+    let score_div = document.createElement("div")
+
+    score_div.setAttribute("class", "row")
+    score_div.setAttribute("id", "myscore")
+    score_header = document.createElement("H4")
+    let score_text = document.createTextNode("Score: "+score+"/"+set_ingredients.size)
+    score_header.appendChild(score_text)
+    $("#score").append(score_header)
+
+    $("#q1_header").append(score_div)
+
+    var arr = Array.from(document.getElementsByClassName("can-drop"));
+    console.log(arr)
+    for (let i=0; i<arr.length; i++){
+        if(!set_ingredients.has(arr[i].textContent)){
+            //console.log(element.textContent)
+            //element.classList.remove("can-drop")
+            arr[i].classList.add("wrong-drop")
+            console.log(arr[i])
+            arr[i].classList.remove("can-drop")
+        }
+    }
+
+    interact('.drag-drop').unset()
+    $.ajax({
+        type: "POST",
+        url: "/record_q1",
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify([score,max_score,Array.from(set_ans)]),
+        success: function(newData){
+            console.log(newData)
+        }
+    });
+    sub_btn = document.getElementById("sub_btn")
+    sub_btn.setAttribute("onclick","goto_next()")
+    sub_btn.innerHTML = "Next Question"
+}
+
+function goto_next(){
+    window.location = ("/quiz_quantity/"+data["drink_id"])
+}
+
+function bottom_buttons(){
+    let submit_button_div = document.createElement("div")
+    let clear_button_div = document.createElement("div")
+    submit_button_div.setAttribute("class", "col-md-6 text-right")
+    clear_button_div.setAttribute("class", "col-md-6 text-left")
+
+    let submit_button = document.createElement("button")
+    let clear_button = document.createElement("a")
+
+    submit_button.setAttribute("class", "btn btn-success ")
+    submit_button.setAttribute("role", "button")
+    submit_button.setAttribute("onclick","get_score()")
+    submit_button.setAttribute("id","sub_btn")
+    //submit_button.setAttribute("href", "/quiz_ingredients/"+data["drink_id"])
+    submit_button.innerHTML = "Submit"
+
+    clear_button.setAttribute("class", "btn btn-success ")
+    clear_button.setAttribute("role", "button")
+    clear_button.setAttribute("id", "clearbtn")
+    clear_button.setAttribute("href", "/quiz_ingredients/"+data["drink_id"])
+    clear_button.innerHTML = "Clear All"
+    submit_button_div.append(submit_button)
+    clear_button_div.append(clear_button)
+
+    $("#buttonrow").append(clear_button_div)
+    $("#buttonrow").append(submit_button_div)
+}
+
+$(document).ready(function(){
+    highlightCurrent();
+    render_ingredients();
+    bottom_buttons();
+    render_header();
+})
+</script>
+
+<div class="row container">
+    <div class="col-md-12" id="q1_header">
+    </div> 
+</div>
+<div id="score"></div>
+<div class="row container" id="buttonrow">
+</div>
+<div class="row container">
+    <div class="col-md-3" id="ingredient_row">
+    </div>
+    <div class="col-md-9 dropzone z_lowest"></div>
+</div>
+
+<div class="row container" id="buttonrow">
+<div class="bottomSpacing"></div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link rel="icon" href="data:,">
+
+<!-- jquery -->
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+
+<script>
+
+$(document).ready(function(){
+    $("#1").click(function(e){
+        let item_id=this.id
+        window.location.href ="/learnstart/"+item_id;
+    })
+    $("#2").click(function(e){
+        let item_id=this.id
+        window.location.href ="/learnstart/"+item_id;
+    })
+    $("#3").click(function(e){
+        let item_id=this.id
+        window.location.href ="/learnstart/"+item_id;
+    })
+    $("#4").click(function(e){
+        let item_id=this.id
+        window.location.href ="/learnstart/"+item_id;
+    })
+
+
+    // time entered
+        $(window).on('load', function() {
+            let currentdate = new Date();
+            let datetime = "Time Entered on page " + window.location.pathname + " : " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth()+1)  + "/"
+                    + currentdate.getFullYear() + " @ "
+                    + currentdate.getHours() + ":"
+                    + currentdate.getMinutes() + ":"
+                    + currentdate.getSeconds();
+            $.ajax({
+                type: "POST",
+                url: "/time",
+                dataType : "json",
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify(datetime),
+                success: function(newData){
+                    console.log(newData)
+                }
+            });
+        })
+
+        $(function () {
+            $('navbarNav li a').filter(function () {
+                return this.href === location.href;
+            }).addClass('active');
+        });
+})
+
+</script>
+
+
+
+    <title>Making Drinks</title>
+  </head>
+  <body>
+
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="/">Making Drinks</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav" id="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" id="homelink" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="1" href="#">Pina Colada</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="2" href="#">Martini</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="3" href="#">Whiskey Sour</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="4" href="#">Mojito</a>
+            </li>
+            <li class="nav-item" id="quizlink">
+              <a class="nav-link"  href="/quiz">Quiz</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+    <div class="container topmargin">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+  </body>
+</html>

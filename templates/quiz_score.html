@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+    let data = {{data|tojson}}
+    let scores = {{scores|tojson}}
+    let next = {{next|tojson}}
+    console.log(scores)
+
+    function highlightCurrent(){
+        let activeid = '#quizlink'
+        $(activeid).addClass('active')
+        $('#homelink').removeClass('active')
+    }
+
+    $(document).ready(function(){
+        highlightCurrent();
+    })
+
+</script>
+
+<div class="row container">
+    <div class="col-md-12">
+        <div class="row justify-content-center">
+            <h1 class="ScoreTitle">Score for {{data.drinkname}} Quiz:</h1>
+        </div>
+
+        <div class="row ScoreSpace">
+            <div class="col-2"></div>
+            <div class="col-4">
+                <img class="img-fluid imgrow" alt="Pina colada drink" id="image">
+            </div>
+            <div class="col-4 justify-content-center">
+                <div class="fullScoreInfo">
+                    <h4 id="totalScore">
+                        Result: {{'%0.2f' | format(((scores[0]+scores[2]+scores[4])/(scores[1]+scores[3]+scores[5]))*100|float)}} %
+                    </h4>
+                    <div class="quizScores">
+
+                        <h5 class="tab">Question 1: {{scores[0]}}/{{scores[1]}}</h5>
+
+                        <h5 class="tab">Question 2: {{scores[2]}}/{{scores[3]}}</h5>
+
+                        <h5 class="tab">Question 3: {{scores[4]}}/{{scores[5]}}</h5>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-2"></div>
+
+        </div>
+        <div class="row bottom-btn">
+            <div class="col-md-3 text-left"><a class="btn btn-primary" href="/quiz_ingredients/{{data.drink_id}}" role="button">Retry Quiz</a></div>
+            <div class="col-6 justify-content-center">Try making the drink yourself or continue learning a new drink.</div>
+            <div class="col-md-3 text-right"><a class="btn btn-primary" role="button" id="continue">Continue to next drink</a></div>
+
+            <script>
+                ctn = document.getElementById("continue")
+                ctn.setAttribute("href", "/quiz_ingredients/"+next[data.drink_id])
+                img = document.getElementById("image")
+                img.setAttribute("src", data["images"][0])
+                console.log(data.images[0])
+            </script>
+
+        </div>
+
+
+    </div>
+
+{% endblock %}

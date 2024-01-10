@@ -1,0 +1,47 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+let data = {{data|tojson}}
+
+function renderImages(){
+    $.each(data, function(i, image){
+        let imgdiv =  document.createElement("div");
+        let img = document.createElement("img");
+        img.src = image;
+        img.setAttribute("class", "imgitem startimg")
+
+        imgdiv.append(img);
+        $("#homeimages").append(imgdiv)
+
+    })
+}
+
+$(document).ready(function(){
+    renderImages();
+})
+</script>
+
+<div class="row container">
+    <div class="col-md-12">
+        <div class="row homePageTitle">
+            <h2>Learn to make alcoholic drinks!</h2>
+        </div>
+        <div class="row homePageSubheading">
+            <h6>Take 10 mins to become a bartender! Learn the following drinks:</h6>
+        </div>
+
+        <div class="row justify-content-center" id="homeimages"></div>
+        <div class="row justify-content-center">
+            <a class="btn btn-success startbutton" href="/learnstart/1">Start<a>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}

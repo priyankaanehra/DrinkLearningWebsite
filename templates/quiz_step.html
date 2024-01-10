@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<head>
+    <style>
+        .slist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .slist li {
+            margin: 10px;
+            padding: 15px;
+            border: 1px solid #dfdfdf;
+            background: #f8f9fa;
+            color:#6c757d;
+
+        }
+
+        li{
+            display: list-item;
+        }
+
+        /* (B) DRAG-AND-DROP HINT */
+        .slist li.hint {
+            border: 1px solid #f8f9fa;
+            background: #c8e3da;
+        }
+        .slist li.active {
+            border: 1px solid #f8f9fa;
+            background:  #14835e;
+            color:#f8f9fa;
+        }
+
+        .slist li.wrong {
+            border: 2px solid #f8f9fa;
+            background: #e42626;
+            color:#f8f9fa;
+        }
+
+        .slist li.correct {
+            border: 1px solid #f8f9fa;
+            background: #14835e;
+            color:white;
+        }
+        /* (X) DOES NOT MATTER */
+        * {
+            font-family: arial, sans-serif;
+            box-sizing: border-box;
+        }
+
+        H1{
+            text-align: center;
+        }
+
+        #score{
+            text-align: right;
+            text-decoration:underline;
+            font-weight: bolder;
+        }
+
+    </style>
+</head>
+
+<script>
+    let data = {{data|tojson}}
+
+    function highlightCurrent(){
+        let activeid = '#quizlink'
+        $(activeid).addClass('active')
+        $('#homelink').removeClass('active')
+    }
+
+    $(document).ready(function(){
+        highlightCurrent();
+    })
+
+</script>
+
+<link rel="stylesheet" src="{{ url_for('static', filename = 'sort-list.css')}}">
+
+<script type="text/javascript" src="{{ url_for('static', filename = 'sort-list.js') }}"></script>
+
+<div class="row container">
+
+    <div class="col-md-12">
+        <div>
+            <H1>Quiz - {{data.drinkname}}</H1>
+        </div>
+        <div>
+            <H2>Q3.Drag the steps into correct order.</H2>
+        </div>
+        <div id="score"></div>
+        <div class="row bottom-btn">
+            <div class="col-md-6 text-left"><a class="btn btn-success" style="color:#FFFFFF;" role="button" id="clear">Clear All</a></div>
+            <div class="col-md-6 text-right"><a class="btn btn-success" style="color:#FFFFFF;" role="button" id="submit">Submit</a></div>
+            <div id="next"></div>
+
+
+        </div>
+            
+
+            <ul id="sortlist">
+
+            </ul>
+
+
+        </div>
+
+
+
+    </div>
+</div>
+{% endblock %}

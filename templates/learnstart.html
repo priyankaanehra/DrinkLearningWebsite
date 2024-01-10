@@ -1,0 +1,123 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+    let data = {{data|tojson}}
+    function bottomButtons(){
+        let bottombuttons = document.createElement("div");
+        let b = document.createElement("div");
+        let n = document.createElement("div");
+        b.setAttribute("class", "col-md-6 text-left");
+        n.setAttribute("class", "col-md-6 text-right");
+
+        let backbutton = document.createElement("a");
+
+        backbutton.setAttribute("class", "btn btn-primary ")
+        backbutton.setAttribute("role", "button")
+        backbutton.innerHTML = "Back";
+
+        if(parseInt(data["drink_id"]) == 1){
+            backbutton.setAttribute("href", "/")
+        } else {
+            let id = parseInt(data["drink_id"]);
+            id = id - 1;
+            let strid = id.toString()
+            backbutton.setAttribute("href", "/learnsteps/"+strid)
+        }
+
+        let nextbutton = document.createElement("a");
+        nextbutton.setAttribute("class", "btn btn-primary ")
+        nextbutton.setAttribute("role", "button")
+        nextbutton.innerHTML = "Next";
+        nextbutton.setAttribute("href", "/learningredients/"+data["drink_id"])
+
+
+        b.append(backbutton);
+        n.append(nextbutton);
+
+        $("#buttonrow").append(b)
+        $("#buttonrow").append(n)
+    }
+
+function renderImages(){
+    $.each(data["images"], function(i, image){
+        let imgdiv =  document.createElement("div");
+        let img = document.createElement("img");
+        img.src = image;
+        img.setAttribute("class", "imgitem startimg");
+        imgdiv.append(img);
+
+        $("#imgrow").append(imgdiv)
+
+    })
+}
+
+function renderFact(){
+
+    let factdiv =  document.createElement("div");
+    factdiv.innerHTML = data["fact"];
+    factdiv.setAttribute("class", "drinkfact");
+    $("#factrow").append(factdiv)
+}
+
+
+function highlightCurrent(){
+    let activeid = '#'+data['drink_id']
+    $('#homelink').removeClass('active')
+    $(activeid).addClass('active')
+}
+
+$(document).ready(function(){
+    bottomButtons();
+    renderImages();
+    renderFact();
+    highlightCurrent();
+
+})
+
+    $(window).on('load', function() {
+        let currentdate = new Date();
+        let datetime = "Time Entered on page " + window.location.pathname + " : " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/"
+                + currentdate.getFullYear() + " @ "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+        $.ajax({
+            type: "POST",
+            url: "/time",
+            dataType : "json",
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify(datetime),
+            success: function(newData){
+                console.log(newData)
+            }
+        });
+    })
+</script>
+
+
+<div class="row container">
+    <div class="col-md-12">
+        <div class="row">
+            <h2 class="learnStartTitle">{{data.drinkname}}</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-2"></div>
+            <div class="col-4">
+                <div id="imgrow"></div>
+            </div>
+            <div class="col-4">
+                <div id="factrow"></div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+        <div class="row" id="buttonrow"></div>
+
+    </div>
+</div>
+
+
+{% endblock %}

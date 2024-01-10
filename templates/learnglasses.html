@@ -1,0 +1,94 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+
+let data = {{data|tojson}}
+
+function bottomButtons(){
+    let bottombuttons = document.createElement("div");
+    let q = document.createElement("div");
+    let n = document.createElement("div");
+    q.setAttribute("class", "col-md-6 text-left");
+    n.setAttribute("class", "col-md-6 text-right");
+
+    let quizbutton = document.createElement("a");
+    let nextbutton = document.createElement("a");
+
+    quizbutton.setAttribute("class", "btn btn-success ")
+    quizbutton.setAttribute("role", "button")
+    quizbutton.setAttribute("href", "/quiz")
+    quizbutton.innerHTML = "go to quiz";
+
+
+    nextbutton.setAttribute("class", "btn btn-success ")
+    nextbutton.setAttribute("role", "button")
+    if(parseInt(data["glasses_id"]) < 2){
+        let id = parseInt(data["glasses_id"]);
+        id = id + 1;
+        let strid = id.toString()
+        nextbutton.setAttribute("href", "/learnglasses/2")
+
+    } else {
+        nextbutton.setAttribute("href", "/learnstart/1")
+    }
+    nextbutton.innerHTML = "next";
+
+    q.append(quizbutton);
+    n.append(nextbutton);
+
+    $("#buttonrow").append(q)
+    $("#buttonrow").append(n)
+}
+
+function renderGlasses(){
+    $.each(data["glasses_data"], function(i, glass){
+        console.log(glass)
+        let glassdiv = document.createElement("div");
+        glassdiv.setAttribute("class", "glassbox col-md-3")
+        let txtdiv = document.createElement("div");
+        txtdiv.setAttribute("class", "itemtxt")
+        let name =
+         document.createTextNode(glass["name"]);
+        txtdiv.appendChild(name);
+        let imgdiv =  document.createElement("div");
+        imgdiv.setAttribute("class", "col-md-4 imgitem")
+        let img = document.createElement("img");
+        img.src = glass["image"];
+        img.setAttribute("class", "imgitem")
+        imgdiv.appendChild(img)
+        glassdiv.append(imgdiv)
+        glassdiv.append(txtdiv)
+        $("#glass_row").append(glassdiv)
+
+    })
+}
+
+function highlightCurrent(){
+    let activeid = '#'+data['drink_id']
+    console.log($('#homelink'))
+    $('#homelink').removeClass('active')
+    $(activeid).addClass('active')
+}
+
+$(document).ready(function(){
+    bottomButtons();
+    renderGlasses();
+    highlightCurrent();
+})
+</script>
+
+<div class="row container">
+    <div class="col-md-12">
+        <div class="row">
+            <h2 class="learnStartTitle"> Different glasses</h2>
+        </div>
+
+        <div class="row align-items-end itemrow" id="glass_row"></div>
+        <div class="row" id="buttonrow"></div>
+
+    </div>
+</div>
+{% endblock %}

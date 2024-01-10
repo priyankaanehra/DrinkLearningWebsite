@@ -1,0 +1,77 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+
+    function highlightCurrent(){
+        let activeid = '#quizlink'
+        $(activeid).addClass('active')
+        $('#homelink').removeClass('active')
+    }
+
+
+    $(document).ready(function(){
+        highlightCurrent();
+    // time entered
+        $(window).on('load', function() {
+            let currentdate = new Date();
+            let datetime = "Time Entered on page " + window.location.pathname + " : " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth()+1)  + "/"
+                    + currentdate.getFullYear() + " @ "
+                    + currentdate.getHours() + ":"
+                    + currentdate.getMinutes() + ":"
+                    + currentdate.getSeconds();
+            $.ajax({
+                type: "POST",
+                url: "/time",
+                dataType : "json",
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify(datetime),
+                success: function(newData){
+                    console.log(newData)
+                }
+            });
+        })
+    })
+</script>
+
+
+
+
+<div class="row container">
+    <div class="col-md-12">
+        <div class="row">
+            <h2 class="quizMainPageTitle">Test your knowledge</h2>
+        </div>
+    </div>
+
+    <div class = "col-md-6">
+        <div class="row justify-content-center">
+            <a type="button" class="btn btn-success allDrinksButton" href="/quiz_ingredients/1"><span>Quiz All Drinks</span></a>
+        </div>
+    </div>
+
+    <div class = "col-md-6">
+        <div class="row justify-content-center">
+            <a type="button" class="btn btn-success drinkButton" href="/quiz_ingredients/1"><span>Pina Colada</span></a>
+        </div>
+        <div class="row justify-content-center">
+            <a type="button" class="btn btn-success drinkButton" href="/quiz_ingredients/2"><span>Martini</span></a>
+        </div>
+        <div class="row justify-content-center">
+            <a type="button" class="btn btn-success drinkButton" href="/quiz_ingredients/3"><span>Whiskey Sour</span></a>
+        </div>
+        <div class="row justify-content-center">
+            <a type="button" class="btn btn-success drinkButton" href="/quiz_ingredients/4"><span>Mojito</span></a>
+        </div>
+    </div>
+
+
+
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,84 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+
+let data = {{data|tojson}}
+
+function bottomButtons(){
+    let bottombuttons = document.createElement("div");
+    let b = document.createElement("div");
+    let n = document.createElement("div");
+    b.setAttribute("class", "col-md-6 text-left");
+    n.setAttribute("class", "col-md-6 text-right");
+
+    let backbutton = document.createElement("a");
+
+    backbutton.setAttribute("class", "btn btn-success ")
+    backbutton.setAttribute("role", "button")
+    backbutton.innerHTML = "Back";
+    backbutton.setAttribute("href", "/learnstart/"+data["drink_id"])
+
+
+    let nextbutton = document.createElement("a");
+    nextbutton.setAttribute("class", "btn btn-success ")
+    nextbutton.setAttribute("role", "button")
+    nextbutton.innerHTML = "Next";
+    nextbutton.setAttribute("href", "/learnsteps/"+data["drink_id"])
+
+    b.append(backbutton);
+    n.append(nextbutton);
+
+    $("#buttonrow").append(b)
+    $("#buttonrow").append(n)
+}
+
+function renderIngredients(){
+    $.each(data["ingredients"], function(i, ingredient){
+        let ingredientdiv = document.createElement("div");
+        ingredientdiv.setAttribute("class", "col-md-2 item")
+        let txtdiv = document.createElement("div");
+        txtdiv.setAttribute("class", "itemtxt")
+        let ingredient_text =
+         document.createTextNode(ingredient['amount']+" "+ingredient['unit']+ " "+ingredient["name"]);
+        txtdiv.appendChild(ingredient_text)
+        let imgdiv =  document.createElement("div");
+        imgdiv.setAttribute("class", "col-md-2 imgitem")
+        let img = document.createElement("img");
+        img.src = ingredient["image"];
+        img.setAttribute("class", "imgitem aligndown")
+        imgdiv.appendChild(img)
+        ingredientdiv.append(imgdiv)
+        ingredientdiv.append(txtdiv)
+        $("#ingredient_row").append(ingredientdiv)
+    })
+}
+
+function highlightCurrent(){
+    let activeid = '#'+data['drink_id']
+    console.log($('#homelink'))
+    $('#homelink').removeClass('active')
+    $(activeid).addClass('active')
+}
+
+$(document).ready(function(){
+    bottomButtons();
+    renderIngredients();
+    highlightCurrent();
+})
+</script>
+
+<div class="row container">
+    <div class="col-md-12">
+        <div class="row">
+            <h2 class="learnStartTitle">{{data.drinkname}} - Ingredients</h2>(for 1 serving)
+        </div>
+
+        <div class="row align-items-end itemrow justify-content-center" id="ingredient_row"></div>
+        <div class="row" id="buttonrow"></div>
+
+    </div>
+</div>
+{% endblock %}
