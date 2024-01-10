@@ -1,0 +1,66 @@
+.z_lowest {
+  z-index: -9999;
+}
+
+.dropzone {
+  #height: 500px;
+  background-color: #f8f9fa;
+  border: dashed 4px transparent;
+  border-radius: 4px;
+  margin: 10px auto 30px;
+  #padding: 20px;
+  width: 80%;
+  
+}
+
+.drop-active {
+  border-color: #6c757d;
+}
+
+.drop-target {
+  background-color: #fff;
+  border-color: #6c757d;
+  border-style: solid;
+}
+
+.drag-drop {
+  display: table;
+  height: 100px;
+  width: 100%;
+  text-align: center;
+
+  #display: inline-block;
+  #min-width: 40px;
+  #padding: 0.5em 0.5em;
+  height: 50px;
+  #margin: 1rem 0 0 1rem;
+
+  color: #fff;
+  background-color: #1d4743;
+  border: solid 2px #f8f9fa;
+
+  touch-action: none;
+  transform: translate(0px, 0px);
+
+  transition: background-color 0.3s;
+}
+
+span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.drag-drop.can-drop {
+  color: #fff;
+  background-color: #14835e;
+}
+
+#.can-drop {
+#  color: #fff;
+#  #background-color: #4e4;
+#}
+
+.wrong-drop {
+  color: #fff;
+  background-color: #e42626;
+}

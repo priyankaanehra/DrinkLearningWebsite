@@ -1,0 +1,222 @@
+body{
+    background:#c8e3da;
+    color:#343a40;
+}
+
+a{
+    color:#343a40;
+}
+
+.navbar{
+    background:#c8e3da;
+    border-bottom:1px solid #1d4743;
+}
+
+#homeimages{
+    margin-bottom:40px;
+}
+
+.btn{
+    background:#1d4743;
+    border: #1d4743;
+    outline-color: #1d4743;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color:#14835e;
+}
+.btn:focus {
+    background-color:#14835e;
+}
+.btn:active {
+
+    background-color: #2ba652;
+
+    box-shadow: #1d4743;
+
+    transform: translateY(4px)
+}
+
+
+    background-color: #1d4743;
+    box-shadow:#1d4743;
+    outline: none;
+}
+.btn-success:hover, .btn-success:focus,.btn-success:visited {
+    color: white;
+    background-color: #1d4743;
+    outline: none;
+    border: none;
+}
+.btn-success.changebutedit {
+    color: #14835e;
+    background-color: #1d4743;
+    outline: none;
+    border: none;
+}
+.btn:focus, .btn:active, .btn.active, .btn:focus:active {
+    background-image: none;
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
+
+.item{
+    padding:5px;
+}
+
+.imgitem{
+    max-width:100%;
+    max-height:250px;
+}
+.itemtxt{
+    text-align: center;
+}
+.itemrow{
+    padding-bottom:20px;
+}
+
+.bottom-btn{
+    padding:20px;
+}
+
+.startimg{
+    padding:5px;
+    max-width: 100%;
+    margin: 0%;
+}
+
+.startbutton{
+    width: 300px;
+    height: 50px;
+    margin: 0 auto;
+    padding: 0;
+    display: inline-block;
+    line-height: 50px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.homePageTitle{
+    text-align: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.homePageSubheading{
+    text-align: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.allDrinksButton{
+    height:400px;
+    width:400px;
+    font-weight: bold;
+    border: none;
+}
+.allDrinksButton>span{
+    position: relative;
+    top: 40%;
+}
+
+.drinkButton{
+    margin-top: 10px;
+    width: 400px;
+    height:90px;
+    font-weight: bold;
+    border: none;
+}
+.drinkButton>span{
+    position: relative;
+    top: 30%;
+}
+
+.quizMainPageTitle{
+    text-align: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.stepbox {
+
+    margin:10px;
+    border: 2px solid #1d4743;
+    padding: 0px;
+}
+
+.steptext{
+    padding:5px;
+    background:#c8e3da;
+    height: 100px;
+}
+
+.steptitle{
+    padding:5px;
+    background:#1d4743;
+    color: white;
+}
+.stepslearn{
+    margin-left: 120px;
+}
+
+.moveDown{
+    position:relative;
+    bottom:0
+}
+
+.topmargin{
+    margin-top: 20px;
+}
+.drinkfact{
+    width:80%;
+    padding:5px;
+    font-size:18px;
+
+}
+#clearbtn{
+    margin-bottom: 15px;
+}
+.bottomSpacing{
+    margin-bottom: 20px;
+}
+
+#navbarNav ul li a.active-page
+{
+  color: #343a40;
+}
+
+.ScoreSpace{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.quizScores{
+    text-align: left;
+}
+#totalScore{
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.tab{
+
+    margin-left: 25px;
+}
+#score{
+    text-align:right;
+    font-weight:bolder;
+    text-decoration: underline;
+    margin-bottom: 15px;
+    margin-left: 15px;
+}
